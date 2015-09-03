@@ -101,7 +101,7 @@ private[trustedanalytics] object JsonSchemaExtractor {
           case Some(argValues) =>
             argValues(0) match {
               case Constant(s: String) => Some(s)
-              case _ => throw new RuntimeException("Internal Error - bad @ArgDoc annotation description argument type for $tag (expected String)")
+              case _ => throw new RuntimeException(s"Internal Error - bad @ArgDoc annotation description argument type for $tag (expected String)")
               /*
  *            case _ => throw new RuntimeException("Internal Error - bad Argument description annotation type (expected String)")
  */
@@ -157,11 +157,11 @@ private[trustedanalytics] object JsonSchemaExtractor {
       case Some(argValues) =>
         val oneLine: String = argValues(0) match {
           case Constant(s: String) => s
-          case _ => throw new RuntimeException("Internal Error - bad oneLine description in annotation (expected String)")
+          case _ => throw new RuntimeException(s"Internal Error - bad oneLine description in annotation for $tag (expected String)")
         }
         val extended: String = argValues(1) match {
           case Constant(s: String) => s
-          case _ => throw new RuntimeException("Internal Error - bad extended description in annotation (expected String)")
+          case _ => throw new RuntimeException(s"Internal Error - bad extended description in annotation for $tag (expected String)")
         }
         val returns: String = argValues(2) match {
           case Constant(s: String) => s

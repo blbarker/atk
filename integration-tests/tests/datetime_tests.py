@@ -121,6 +121,12 @@ class DateTimeTests(unittest.TestCase):
         mismatches = filter(lambda x: x[0] != x[1], zip(data, ['spring', 'spring', "summer", "summer", "summer"]))
         self.assertFalse(mismatches, str(mismatches))
 
+    def test_download_datetime(self):
+        df = self.frame.download()
+        #print "Pandas DF:\n" + repr(df)
+        self.assertEqual("2010-05-01T19:09:01.000Z", df["start"][0])
+        self.assertEqual("2010-07-15T19:00:20.000Z", df["stop"][2])
+
 
 if __name__ == "__main__":
     unittest.main()

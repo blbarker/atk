@@ -225,6 +225,8 @@ object LoadRddFunctions extends Serializable {
           }
           else if (array(i).dataType.getClass == TimestampType.getClass || array(i).dataType.getClass == DateType.getClass) {
             mutableRow(i) = o.toString
+            // todo - enable conversion from spark types to joda datetime
+            //mutableRow(i) = DataTypes.toDateTime(o.toString).toString
           }
           else if (array(i).dataType.getClass == ShortType.getClass) {
             mutableRow(i) = row.getShort(i).toInt
