@@ -240,7 +240,7 @@ private[trustedanalytics] object JsonSchemaExtractor {
       case t if t =:= typeTag[Long].tpe => JsonSchema.long(description = description, defaultValue = defaultValue)
       case t if t =:= typeTag[Float].tpe => JsonSchema.float(description = description, defaultValue = defaultValue)
       case t if t =:= typeTag[Double].tpe => JsonSchema.double(description = description, defaultValue = defaultValue)
-      case t if t =:= typeTag[DateTime].tpe => JsonSchema.dateTime
+      case t if t =:= typeTag[DateTime].tpe => JsonSchema.dateTime(description = description, defaultValue = defaultValue)
       case t if t =:= typeTag[UnitReturn].tpe => JsonSchema.unit
       case t if t =:= typeTag[FrameReference].tpe =>
         val s = JsonSchema.frame(description, defaultValue)

@@ -229,38 +229,43 @@ object DataTypes extends EventLogging {
   }
 
   /**
-   * DataTime
+   * DateTime
    */
   case object datetime extends DataType {
 
-    override type ScalaType = DateTime
+    override type ScalaType = String
+
+    override def scalaType = classOf[ScalaType]
+
+    implicit def stringToDateTime(s: ScalaType): DateTime = toDateTime(s)
 
     override def parse(raw: Any) = Try {
-      toDateTime(raw)
+      toDateTime(raw).toString
+    }
+
+    override def asString(raw: Any): String = {
+      parse(raw).get.asInstanceOf[String]
+    }
+
+    def compare(valueA: DateTime, valueB: DateTime): Int = {
+      valueA.compareTo(valueB)
+    }
+
+    def compare(valueA: String, valueB: String): Int = {
+      toDateTime(valueA).compareTo(toDateTime(valueB))
     }
 
     override def isType(raw: Any): Boolean = {
       // where null is allowed we accept null as this type
-      raw == null || raw.isInstanceOf[DateTime]
+      raw == null || raw.isInstanceOf[DateTime] || Try { toDateTime(raw) }.isSuccess
     }
-
-    override def scalaType = classOf[DateTime]
 
     override def typedJson(raw: Any): JsValue = {
-      parse(raw).get.asInstanceOf[DateTime].toJson
+      asString(raw).toJson
     }
 
-    override def asDouble(raw: Any): Double = {
-      toDouble(raw)
-    }
-
-    override def asString(raw: Any): String = {
-      toStr(raw)
-    }
-
-    def compare(valueA: datetime.ScalaType, valueB: datetime.ScalaType): Int = {
-      valueA.compareTo(valueB)
-    }
+    override def asDouble(raw: Any): Double =
+      throw new IllegalArgumentException("Could not parse datetime object " + raw + " as a Double.")
 
     override def isNumerical = false
 
@@ -736,7 +741,7 @@ object DataTypes extends EventLogging {
         case d: Double => d.compare(DataTypes.toDouble(valueB))
         case s: String => s.compareTo(valueB.toString)
         case v: vector.ScalaType => vector.compare(v, DataTypes.toVector()(valueB))
-        case dt: datetime.ScalaType => datetime.compare(dt, DataTypes.toDateTime(valueB))
+        case dt: DateTime => dt.compareTo(DataTypes.toDateTime(valueB))
         case _ => throw new RuntimeException(s"${valueA.getClass.getName} comparison is not implemented")
       }
     }

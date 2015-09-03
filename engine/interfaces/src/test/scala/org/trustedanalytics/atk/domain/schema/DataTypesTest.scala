@@ -137,7 +137,9 @@ class DataTypesTest extends FlatSpec with Matchers {
 
   "datetime.asDouble" should "give time as milliseconds" in {
     val dt = DateTime.parse("2010-05-08T23:41:54.000Z")
-    DataTypes.datetime.asDouble(dt) shouldBe 1273362114000.0
+    intercept[IllegalArgumentException] {
+      DataTypes.datetime.asDouble(dt)
+    }
   }
 
   "datetime.typeJson" should "produce good Json" in {
@@ -146,7 +148,7 @@ class DataTypesTest extends FlatSpec with Matchers {
     json shouldBe JsString("2010-05-08T23:41:54.000Z")
     json.toString shouldBe "\"2010-05-08T23:41:54.000Z\""
   }
-  
+
   "datetime" should "compare with other datetime values appropriately" in {
     val dt = DateTime.parse("2015-08-01")
     val dtGood = DateTime.parse("2015-08-01")
