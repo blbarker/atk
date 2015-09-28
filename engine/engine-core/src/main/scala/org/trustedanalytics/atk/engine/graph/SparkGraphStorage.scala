@@ -194,6 +194,15 @@ class SparkGraphStorage(metaStore: MetaStore,
     }
   }
 
+  def incrementIdCounter(graph: GraphReference, idCounter: Long)(implicit invocation: Invocation): Unit = {
+    metaStore.withSession("spark.graphstorage.updateIdCounter") {
+      implicit session =>
+        {
+          metaStore.graphRepo.incrementIdCounter(graph.id, idCounter)
+        }
+    }
+  }
+
   /**
    * Defining an Vertex creates an empty vertex list data frame.
    * @param graphRef unique id for graph meta data (already exists)
