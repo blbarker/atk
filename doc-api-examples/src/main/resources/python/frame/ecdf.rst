@@ -1,22 +1,18 @@
 Examples
 --------
-Consider the following sample data set in *frame* with actual data labels
-specified in the *labels* column and the predicted labels in the
-*predictions* column:
+Consider the following sample data set in *frame* 'frame' containing several numbers.
 
-# <setup>
+<hide>
 >>> import trustedanalytics as ta
 >>> ta.connect()
 -etc-
 
->>> f = ta.Frame(ta.UploadRows([[1], [3], [1], [0], [2], [1], [4], [3]], [('numbers', ta.int32)]))
+>>> frame = ta.Frame(ta.UploadRows([[1], [3], [1], [0], [2], [1], [4], [3]], [('numbers', ta.int32)]))
 -etc-
 
-# </setup>
+</hide>
 
-# Given frame 'f'
-
->>> f.inspect()
+>>> frame.inspect()
 [#]  numbers
 ============
 [0]        1
@@ -27,10 +23,8 @@ specified in the *labels* column and the predicted labels in the
 [5]        1
 [6]        4
 [7]        3
-
->>> ecdf_frame = f.ecdf('numbers')
--etc-
-
+>>> ecdf_frame = frame.ecdf('numbers')
+<progress>
 >>> ecdf_frame.inspect()
 [#]  numbers  numbers_ECDF
 ==========================
