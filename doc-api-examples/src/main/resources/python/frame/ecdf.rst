@@ -3,10 +3,6 @@ Examples
 Consider the following sample data set in *frame* 'frame' containing several numbers.
 
 <hide>
->>> import trustedanalytics as ta
->>> ta.connect()
--etc-
-
 >>> frame = ta.Frame(ta.UploadRows([[1], [3], [1], [0], [2], [1], [4], [3]], [('numbers', ta.int32)]))
 -etc-
 
