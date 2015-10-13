@@ -1,5 +1,4 @@
-Examples
---------
+
 Consider the following sample data set in *frame* 'frame' containing several numbers.
 
 <hide>

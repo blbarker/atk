@@ -893,12 +893,12 @@ class _BaseFrame(_DocStubs_BaseFrame, CommandLoadable):
 
         <skip>
             >>> frame.inspect(4)
-           [#]    animal      name    age     weight
-           =========================================
-           [0]  human       George      8      542.5
-           [1]  human       Ursula      6      495.0
-           [2]  ape         Ape        41      400.0
-           [3]  elephant    Shep        5     8630.0
+           [#]  animal    name    age  weight
+           ==================================
+           [0]  human     George    8   542.5
+           [1]  human     Ursula    6   495.0
+           [2]  ape       Ape      41   400.0
+           [3]  elephant  Shep      5  8630.0
         </skip>
 
         # For other examples, see :ref:`example_frame.inspect`.
@@ -1073,7 +1073,7 @@ class _BaseFrame(_DocStubs_BaseFrame, CommandLoadable):
 
         And an outer join:
 
-        <skip>
+        <skip>  # todo: remove <skip></skip>  see DPAT-900
         >>> j_outer = codes.join(colors, 'numbers', how='outer')
         <progress>
 
