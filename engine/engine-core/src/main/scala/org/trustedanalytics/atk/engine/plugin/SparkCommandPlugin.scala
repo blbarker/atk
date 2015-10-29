@@ -33,6 +33,33 @@ import org.apache.spark.engine.{ ProgressPrinter, SparkProgressListener }
 import org.trustedanalytics.atk.event.EventLogging
 import org.trustedanalytics.atk.engine.{ SparkContextFactory, EngineConfig, EngineImpl }
 
+trait Sparky {
+
+  def engine(implicit invocation: Invocation): EngineImpl = invocation.asInstanceOf[SparkInvocation].engine
+
+  def sc(implicit invocation: Invocation): SparkContext = invocation.asInstanceOf[SparkInvocation].sparkContext
+
+  // Frames
+  implicit def frameRefToSparkFrame(frame: FrameReference)(implicit invocation: Invocation): SparkFrame = new SparkFrameImpl(frame, sc, engine.frames)
+
+  implicit def frameEntityToSparkFrame(frameEntity: FrameEntity)(implicit invocation: Invocation): SparkFrame = frameRefToSparkFrame(frameEntity.toReference)
+
+  // Vertex Frames
+  implicit def frameRefToVertexSparkFrame(frame: FrameReference)(implicit invocation: Invocation): SparkVertexFrame = new SparkVertexFrameImpl(frame, sc, engine.frames, engine.graphs)
+
+  implicit def frameEntityToVertexSparkFrame(frameEntity: FrameEntity)(implicit invocation: Invocation): SparkVertexFrame = frameRefToVertexSparkFrame(frameEntity.toReference)
+
+  // Edge Frames
+  implicit def frameRefToEdgeSparkFrame(frame: FrameReference)(implicit invocation: Invocation): SparkEdgeFrame = new SparkEdgeFrameImpl(frame, sc, engine.frames, engine.graphs)
+
+  implicit def frameEntityToEdgeSparkFrame(frameEntity: FrameEntity)(implicit invocation: Invocation): SparkEdgeFrame = frameRefToEdgeSparkFrame(frameEntity.toReference)
+
+  // Graphs
+  implicit def graphRefToSparkGraph(graph: GraphReference)(implicit invocation: Invocation): SparkGraph = new SparkGraphImpl(graph, sc, engine.graphs)
+
+  implicit def graphEntityToSparkGraph(graphEntity: GraphEntity)(implicit invocation: Invocation): SparkGraph = graphRefToSparkGraph(graphEntity.toReference)
+}
+
 /**
  * Base trait for command plugins that need direct access to a SparkContext
  *
@@ -40,9 +67,9 @@ import org.trustedanalytics.atk.engine.{ SparkContextFactory, EngineConfig, Engi
  * @tparam Return the return type for the command
  */
 trait SparkCommandPlugin[Argument <: Product, Return <: Product]
-    extends CommandPlugin[Argument, Return] {
+    extends CommandPlugin[Argument, Return] with Sparky {
 
-  override def engine(implicit invocation: Invocation): EngineImpl = invocation.asInstanceOf[SparkInvocation].engine
+  implicit val sparky: Sparky = implicitly[Sparky]
 
   /**
    * Name of the custom kryoclass this plugin needs.
@@ -50,24 +77,7 @@ trait SparkCommandPlugin[Argument <: Product, Return <: Product]
    */
   def kryoRegistrator: Option[String] = Some("org.trustedanalytics.atk.engine.EngineKryoRegistrator")
 
-  def sc(implicit invocation: Invocation): SparkContext = invocation.asInstanceOf[SparkInvocation].sparkContext
-
-  // Frames
-  implicit def frameRefToSparkFrame(frame: FrameReference)(implicit invocation: Invocation): SparkFrame = new SparkFrameImpl(frame, sc, engine.frames)
-  implicit def frameEntityToSparkFrame(frameEntity: FrameEntity)(implicit invocation: Invocation): SparkFrame = frameRefToSparkFrame(frameEntity.toReference)
-
-  // Vertex Frames
-  implicit def frameRefToVertexSparkFrame(frame: FrameReference)(implicit invocation: Invocation): SparkVertexFrame = new SparkVertexFrameImpl(frame, sc, engine.frames, engine.graphs)
-  implicit def frameEntityToVertexSparkFrame(frameEntity: FrameEntity)(implicit invocation: Invocation): SparkVertexFrame = frameRefToVertexSparkFrame(frameEntity.toReference)
-
-  // Edge Frames
-  implicit def frameRefToEdgeSparkFrame(frame: FrameReference)(implicit invocation: Invocation): SparkEdgeFrame = new SparkEdgeFrameImpl(frame, sc, engine.frames, engine.graphs)
-  implicit def frameEntityToEdgeSparkFrame(frameEntity: FrameEntity)(implicit invocation: Invocation): SparkEdgeFrame = frameRefToEdgeSparkFrame(frameEntity.toReference)
-
-  // Graphs
-  implicit def graphRefToSparkGraph(graph: GraphReference)(implicit invocation: Invocation): SparkGraph = new SparkGraphImpl(graph, sc, engine.graphs)
-  implicit def graphEntityToSparkGraph(graphEntity: GraphEntity)(implicit invocation: Invocation): SparkGraph = graphRefToSparkGraph(graphEntity.toReference)
-
+  override def engine(implicit invocation: Invocation): EngineImpl = invocation.asInstanceOf[SparkInvocation].engine
   /**
    * Can be overridden by subclasses to provide a more specialized Invocation. Called before
    * calling the execute method.

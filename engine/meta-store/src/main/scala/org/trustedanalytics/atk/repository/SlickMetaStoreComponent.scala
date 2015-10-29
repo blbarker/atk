@@ -394,7 +394,10 @@ trait SlickMetaStoreComponent extends MetaStoreComponent with EventLogging {
     def revision = column[Int]("revision")
 
     def commandId = column[Option[Long]]("command_id")
+
     def graphId = column[Option[Long]]("graph_id")
+
+    def modelId = column[Option[Long]]("model_id")
 
     def materializedOn = column[Option[DateTime]]("materialized_start")
 
@@ -412,7 +415,7 @@ trait SlickMetaStoreComponent extends MetaStoreComponent with EventLogging {
     override def * = (id, name, schema, statusId, createdOn, modifiedOn,
       storageFormat, storageLocation, description, rowCount, commandId, createdById, modifiedById,
       materializedOn, materializationComplete,
-      errorFrameId, parentId, graphId, lastReadDate) <> (FrameEntity.tupled, FrameEntity.unapply)
+      errorFrameId, parentId, graphId, modelId, lastReadDate) <> (FrameEntity.tupled, FrameEntity.unapply)
 
     // foreign key relationships
 
@@ -429,6 +432,8 @@ trait SlickMetaStoreComponent extends MetaStoreComponent with EventLogging {
     def parent = foreignKey("frame_parent_id", parentId, frames)(_.id)
 
     def graph = foreignKey("graph_id", graphId, graphs)(_.id)
+
+    def model = foreignKey("model_id", modelId, models)(_.id)
 
   }
 
@@ -567,7 +572,7 @@ trait SlickMetaStoreComponent extends MetaStoreComponent with EventLogging {
     }
 
     def isOwned(frame: FrameEntity)(implicit session: Session): Boolean = {
-      frame.graphId.isDefined || isErrorFrame(frame)
+      frame.graphId.isDefined || frame.modelId.isDefined || isErrorFrame(frame)
     }
 
     def isErrorFrame(frame: FrameEntity)(implicit session: Session): Boolean = {
@@ -859,39 +864,39 @@ trait SlickMetaStoreComponent extends MetaStoreComponent with EventLogging {
     }
   }
 
+  class ModelTable(tag: Tag) extends Table[ModelEntity](tag, "model") {
+    def id = column[Long]("model_id", O.PrimaryKey, O.AutoInc)
+
+    def name = column[Option[String]]("name")
+
+    def modelType = column[String]("model_type")
+
+    def description = column[Option[String]]("description")
+
+    def statusId = column[Long]("status_id", O.Default(Status.Active))
+
+    def data = column[Option[JsObject]]("data")
+
+    def createdOn = column[DateTime]("created_on")
+
+    def modifiedOn = column[DateTime]("modified_on")
+
+    def createdByUserId = column[Option[Long]]("created_by")
+
+    def modifiedByUserId = column[Option[Long]]("modified_by")
+
+    def lastReadDate = column[DateTime]("last_read_date")
+
+    /** projection to/from the database */
+    override def * = (id, name, modelType, description, statusId, data, createdOn, modifiedOn, createdByUserId, modifiedByUserId, lastReadDate) <> (ModelEntity.tupled, ModelEntity.unapply)
+
+  }
+
+  val models = TableQuery[ModelTable]
+
   class SlickModelRepository extends ModelRepository[Session]
       with EventLogging {
     this: Repository[Session, ModelTemplate, ModelEntity] =>
-
-    class ModelTable(tag: Tag) extends Table[ModelEntity](tag, "model") {
-      def id = column[Long]("model_id", O.PrimaryKey, O.AutoInc)
-
-      def name = column[Option[String]]("name")
-
-      def modelType = column[String]("model_type")
-
-      def description = column[Option[String]]("description")
-
-      def statusId = column[Long]("status_id", O.Default(Status.Active))
-
-      def data = column[Option[JsObject]]("data")
-
-      def createdOn = column[DateTime]("created_on")
-
-      def modifiedOn = column[DateTime]("modified_on")
-
-      def createdByUserId = column[Option[Long]]("created_by")
-
-      def modifiedByUserId = column[Option[Long]]("modified_by")
-
-      def lastReadDate = column[DateTime]("last_read_date")
-
-      /** projection to/from the database */
-      override def * = (id, name, modelType, description, statusId, data, createdOn, modifiedOn, createdByUserId, modifiedByUserId, lastReadDate) <> (ModelEntity.tupled, ModelEntity.unapply)
-
-    }
-
-    val models = TableQuery[ModelTable]
 
     protected val modelsAutoInc = models returning models.map(_.id) into {
       case (model, id) => model.copy(id = id)

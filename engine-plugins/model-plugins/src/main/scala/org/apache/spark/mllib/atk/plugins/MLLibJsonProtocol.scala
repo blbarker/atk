@@ -600,6 +600,7 @@ object MLLibJsonProtocol {
   implicit val randomForestClassifierPredictFormat = jsonFormat3(RandomForestClassifierPredictArgs)
   implicit val randomForestClassifierTestFormat = jsonFormat4(RandomForestClassifierTestArgs)
   implicit val randomForestRegressorDataFormat = jsonFormat2(RandomForestRegressorData)
+  implicit val randomForestRegressorDataFormat2 = jsonFormat2(RandomForestRegressorData2)
   implicit val randomForestRegressorTrainFormat = jsonFormat11(RandomForestRegressorTrainArgs)
   implicit val randomForestRegressorPredictFormat = jsonFormat3(RandomForestRegressorPredictArgs)
   implicit val randomForestRegressorTrainReturn = jsonFormat9(RandomForestRegressorTrainReturn)

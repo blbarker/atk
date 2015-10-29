@@ -466,6 +466,10 @@ class SparkFrameStorage(val frameFileStorage: FrameFileStorage,
             val graph = metaStore.graphRepo.lookup(frame.graphId.get).get
             metaStore.graphRepo.updateLastReadDate(graph)
           }
+          if (frame.modelId.isDefined) {
+            val model = metaStore.modelRepo.lookup(frame.modelId.get).get
+            metaStore.modelRepo.updateLastReadDate(model)
+          }
           metaStore.frameRepo.updateLastReadDate(frame).toOption
         }
     }

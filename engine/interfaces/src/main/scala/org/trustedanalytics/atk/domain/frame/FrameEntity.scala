@@ -64,6 +64,7 @@ case class FrameEntity(id: Long,
                        errorFrameId: Option[Long] = None,
                        parent: Option[Long] = None,
                        graphId: Option[Long] = None,
+                       modelId: Option[Long] = None,
                        lastReadDate: DateTime = new DateTime) extends HasId {
   require(id >= 0, "id must be zero or greater")
   require(name != null, "name must not be null")
@@ -74,6 +75,7 @@ case class FrameEntity(id: Long,
     "if name is set it must not be empty or whitespace")
   require(parent.isEmpty || parent.get > 0, "parent must be one or greater if provided")
   require(graphId != null, "graphId must not be null because it is an Option")
+  require(modelId != null, "modelId must not be null because it is an Option")
 
   def uri: String = FrameReference(id).uri
 
@@ -149,7 +151,8 @@ case class FrameEntity(id: Long,
       command = command,
       parent = Some(id),
       // TODO: for lazy graphId wouldn't be set to None here
-      graphId = None)
+      graphId = None,
+      modelId = None)
   }
 
 }
