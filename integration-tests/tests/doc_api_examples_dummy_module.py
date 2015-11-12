@@ -67,9 +67,9 @@ model-collaborative_filtering/train.rst
 model-giraph_lda/train.rst
 model-giraph_lda/predict.rst
 model-giraph_lda/publish.rst
-model-svm/train.rst
-model-svm/predict.rst
-model-svm/test.rst
+(FIXED)model-svm/train.rst
+(FIXED)model-svm/predict.rst
+(FIXED)model-svm/test.rst
 (FIXED)model-linear_regression/train.rst
 (FIXED)model-linear_regression/predict.rst
 (FIXED)model-linear_regression/publish.rst

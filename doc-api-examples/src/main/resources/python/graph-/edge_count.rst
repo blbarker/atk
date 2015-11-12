@@ -1,5 +1,2 @@
-Examples
---------
-.. code::
-
-    >>> graph.edge_count
+See :doc:`here <../../graphs/graph-/__init__>` for example usage in
+graph construction.
