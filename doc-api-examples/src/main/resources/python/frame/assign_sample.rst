@@ -12,6 +12,7 @@
 ...                                 ["stu", 6],
 ...                                 ["vwx", 7],
 ...                                 ["yza", 8],
+...                                 ["bcd", 9],
 ...                                 ["def", 1],
 ...                                 ["ghi", 2],
 ...                                 ["jkl", 3],
@@ -116,7 +117,7 @@ We'll assign labels to each row according to a rough 40-30-30 split, for
 [6]  stu    6  TR
 [7]  vwx    7  VA
 [8]  yza    8  VA
-[9]  def    1  VA
+[9]  bcd    9  VA
 
 <hide>
 # If the inspect proves to be unweildy (i.e. non-deterministic assign_sample),
@@ -154,5 +155,5 @@ Here it is again, this time specifying labels, output column and random seed
 [6]  stu    6  TR          cat2
 [7]  vwx    7  VA          cat3
 [8]  yza    8  VA          cat3
-[9]  def    1  VA          cat4
+[9]  bcd    9  VA          cat4
 
